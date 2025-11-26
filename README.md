@@ -162,20 +162,6 @@ If RDKit is not available, the system falls back to simple string-based features
 - Scikit-learn utilities
 ```
 
-This will:
-- Preprocess molecular data (13 RDKit descriptors)
-- Split into train/test sets
-- Train neural network classifier
-- Save model to `results/model.pt`
-
-### 3. Launch the Chat Interface
-
-```powershell
-.\run_chat.ps1
-```
-
-Open http://localhost:8501 and start chatting!
-
 ## 💡 Usage Examples
 
 ### **Chat Interface Commands:**

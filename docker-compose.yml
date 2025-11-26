@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # FastAPI REST API
+  api:
+    build: .
+    container_name: drugdiscovery-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./results:/app/results
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+      - API_SECRET_KEY=${API_SECRET_KEY:-your-secret-key}
+    command: conda run --no-capture-output -n drugdiscovery uvicorn api.main:app --host 0.0.0.0 --port 8000
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Streamlit Web Application
+  web:
+    build: .
+    container_name: drugdiscovery-web
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./results:/app/results
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: conda run -no-capture-output -n drugdiscovery streamlit run chat_app.py --server.port=8501 --server.address=0.0.0.0
+    depends_on:
+      - api
+    restart: unless-stopped
+  # PostgreSQL Database (optional - uncomment to enable)
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: drugdiscovery-db
+  #   environment:
+  #     POSTGRES_DB: drugdiscovery
+  #     POSTGRES_USER: ${DB_USER:-admin}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+
+  # Redis Cache (optional - uncomment to enable)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: drugdiscovery-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   restart: unless-stopped
+
+  # volumes:
+  #   postgres_data:
+  #   redis_data:
+
+networks:
+  default:
+    name: drugdiscovery-network
