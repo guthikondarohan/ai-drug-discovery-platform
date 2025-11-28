@@ -1,0 +1,12 @@
+# Add research imports at top of file
+import sys
+from pathlib import Path
+
+# Add to imports section (after line 34)
+sys.path.insert(0, str(Path(__file__).parent / 'src'))
+try:
+    from research import create_dataset_overview, create_smiles_table, MoleculeProteinNetwork
+    import pandas as pd
+    RESEARCH_AVAILABLE = True
+except:
+    RESEARCH_AVAILABLE = False

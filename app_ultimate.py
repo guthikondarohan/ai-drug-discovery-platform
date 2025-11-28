@@ -394,15 +394,7 @@ elif st.session_state.current_view == 'fusion':
         
         # Load and analyze files
         for uploaded_file in uploaded_files:
-            try:
-                df = pd.read_csv(uploaded_file, encoding='utf-8')
-            except UnicodeDecodeError:
-                uploaded_file.seek(0)
-                try:
-                    df = pd.read_csv(uploaded_file, encoding='latin1')
-                except:
-                    uploaded_file.seek(0)
-                    df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
+            df = pd.read_csv(uploaded_file)
             fusion.add_file(uploaded_file.name, df)
             analysis = analyze_csv_type(df)
             file_analyses[uploaded_file.name] = analysis
@@ -440,7 +432,7 @@ elif st.session_state.current_view == 'fusion':
         
         merge_suggestions = fusion.suggest_merge_strategy()
         
-        if merge_suggestions.get('recommendation'):
+        if merge_suggestions['recommendation']:
             st.info(f"💡 **Recommended Strategy:** {merge_suggestions['recommendation']['description']}")
         
         col1, col2 = st.columns(2)

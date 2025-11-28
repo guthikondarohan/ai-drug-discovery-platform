@@ -195,7 +195,7 @@ class DataFusion:
         """
         suggestions = self.suggest_merge_strategy()
         
-        if not suggestions['recommendation']:
+        if not suggestions.get('recommendation'):
             # Fallback: concatenate
             merged = self.concatenate_files(axis=0)
             return merged, {
@@ -206,17 +206,40 @@ class DataFusion:
         strategy = suggestions['recommendation']
         
         if strategy['type'] == 'molecular_merge':
-            merged = self.merge_on_column(strategy['key_column'], how='outer')
-            return merged, strategy
+            # Find the actual SMILES column name in each file
+            smiles_col = None
+            for df in self.files.values():
+                for col in df.columns:
+                    if 'smiles' in col.lower():
+                        smiles_col = col
+                        break
+                if smiles_col:
+                    break
+            
+            if smiles_col:
+                try:
+                    merged = self.merge_on_column(smiles_col, how='outer')
+                    return merged, strategy
+                except KeyError:
+                    # Fallback if merge fails
+                    merged = self.concatenate_files(axis=0)
+                    return merged, {'strategy': 'concatenate', 'description': 'Column merge failed, stacked vertically'}
+            else:
+                merged = self.concatenate_files(axis=0)
+                return merged, {'strategy': 'concatenate', 'description': 'No common SMILES column, stacked vertically'}
         
         elif strategy['type'] == 'column_merge':
             key_col = strategy['key_columns'][0]
-            merged = self.merge_on_column(key_col, how='outer')
-            return merged, strategy
+            try:
+                merged = self.merge_on_column(key_col, how='outer')
+                return merged, strategy
+            except KeyError:
+                merged = self.concatenate_files(axis=0)
+                return merged, {'strategy': 'concatenate', 'description': 'Column merge failed, stacked vertically'}
         
         else:
             merged = self.concatenate_files(axis=0)
-            return merged, {'strategy': 'concatenate'}
+            return merged, {'strategy': 'concatenate', 'description': 'Files stacked vertically'}
     
     def get_merge_preview(self, max_rows: int = 10) -> Dict:
         """
