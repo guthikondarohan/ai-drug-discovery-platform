@@ -1,0 +1,18 @@
+# Advanced Features - Additional Requirements
+
+# Explainability
+shap>=0.42.0
+
+# Text/NLP
+sentence-transformers>=2.2.0
+transformers>=4.30.0
+
+# Search
+faiss-cpu>=1.7.4
+
+# Training
+tensorboard>=2.13.0
+tqdm>=4.65.0
+
+# Molecular fingerprints fix
+rdkit>=2023.3.1
