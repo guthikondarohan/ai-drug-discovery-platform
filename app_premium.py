@@ -105,6 +105,8 @@ def load_model():
         return None, 0
 
 
+def predict_molecule(smiles, model):
+    """Predict with visualization"""
     try:
         features_dict = featurize_smiles(smiles)
         if not features_dict:
