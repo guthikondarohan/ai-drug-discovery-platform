@@ -311,7 +311,11 @@ elif st.session_state.current_view == 'analytics':
             fig = px.pie(df, names='prediction', 
                         color='prediction',
                         color_discrete_map={'Active': '#10a37f', 'Inactive': '#ef4444'})
-            fig.update_layout(paper_bgcolor="rgba(0,0,0,0)")
+            fig.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color='white')
+            )
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
@@ -319,7 +323,13 @@ elif st.session_state.current_view == 'analytics':
             fig = px.histogram(df, x='confidence', nbins=20,
                              color='prediction',
                              color_discrete_map={'Active': '#10a37f', 'Inactive': '#ef4444'})
-            fig.update_layout(paper_bgcolor="rgba(0,0,0,0)")
+            fig.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color='white'),
+                xaxis=dict(gridcolor='rgba(255,255,255,0.1)', color='white'),
+                yaxis=dict(gridcolor='rgba(255,255,255,0.1)', color='white')
+            )
             st.plotly_chart(fig, use_container_width=True)
         
         # Timeline
@@ -328,7 +338,13 @@ elif st.session_state.current_view == 'analytics':
         timeline_df = df.groupby([df['timestamp'].dt.date, 'prediction']).size().reset_index(name='count')
         fig = px.line(timeline_df, x='timestamp', y='count', color='prediction',
                      color_discrete_map={'Active': '#10a37f', 'Inactive': '#ef4444'})
-        fig.update_layout(paper_bgcolor="rgba(0,0,0,0)")
+        fig.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color='white'),
+            xaxis=dict(gridcolor='rgba(255,255,255,0.1)', color='white'),
+            yaxis=dict(gridcolor='rgba(255,255,255,0.1)', color='white')
+        )
         st.plotly_chart(fig, use_container_width=True)
 
 elif st.session_state.current_view == 'favorites':
