@@ -123,7 +123,8 @@ with st.sidebar:
     # View selector
     view = st.radio(
         "Navigation",
-        ["🧪 Predict", "📊 Analytics", "⭐ Favorites", "📜 History", "🔀 Data Fusion"],
+        ["🧪 Predict", "📊 Analytics", "⭐ Favorites", "📜 History", "🔀 Data Fusion",
+         "📚 Literature", "⚖️ Compare", "🔍 Explain", "🔎 Search", "🧬 Generate"],
         label_visibility="collapsed"
     )
     
@@ -137,6 +138,16 @@ with st.sidebar:
         st.session_state.current_view = 'history'
     elif view == "🔀 Data Fusion":
         st.session_state.current_view = 'fusion'
+    elif view == "📚 Literature":
+        st.session_state.current_view = 'literature'
+    elif view == "⚖️ Compare":
+        st.session_state.current_view = 'compare'
+    elif view == "🔍 Explain":
+        st.session_state.current_view = 'explain'
+    elif view == "🔎 Search":
+        st.session_state.current_view = 'search'
+    elif view == "🧬 Generate":
+        st.session_state.current_view = 'generate'
     
     st.markdown("---")
     
@@ -630,6 +641,8 @@ elif st.session_state.current_view == 'fusion':
             - ✅ Batch predictions on merged data
             - ✅ Export to CSV/Excel
             """)
+
+
 
 # Footer
 st.markdown("---")
