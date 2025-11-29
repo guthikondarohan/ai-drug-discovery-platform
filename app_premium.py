@@ -113,8 +113,14 @@ def predict_molecule(smiles, model):
         
         features = np.array(list(features_dict.values()), dtype=np.float32)
         
+        # Ensure model is in eval mode
+        model.eval()
+        
         with torch.no_grad():
             x = torch.tensor(features, dtype=torch.float32).unsqueeze(0)
+            
+            # For single sample prediction, BatchNorm might be unstable if not in eval mode
+            # But we explicitly set model.eval() above which fixes Dropout and BatchNorm
             logit = model(x)
             prob = torch.sigmoid(logit).item()
         
