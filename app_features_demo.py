@@ -196,7 +196,10 @@ elif feature == "🔎 Similarity Search":
     st.header("🔎 Molecular Similarity Search")
     st.markdown("Find similar molecules using Tanimoto similarity")
     
-    query_smiles = st.text_input("Enter query SMILES", placeholder="CCO, CC(=O)O...")
+    query_input = st.text_input(
+        "Enter molecule name", 
+        placeholder="ethanol, aspirin, caffeine, ibuprofen..."
+    )
     
     # Example database
     example_molecules = [
@@ -213,18 +216,40 @@ elif feature == "🔎 Similarity Search":
     ]
     
     if st.button("🔍 Find Similar Molecules", type="primary"):
-        if query_smiles:
+        if query_input:
             with st.spinner("Searching..."):
                 try:
                     from rdkit import Chem
                     from rdkit.Chem import AllChem, DataStructs
+                    from name_to_smiles import name_to_smiles, is_likely_smiles
+                    
+                    # Convert name to SMILES if needed
+                    if is_likely_smiles(query_input):
+                        query_smiles = query_input
+                        query_name = "Custom molecule"
+                    else:
+                        query_smiles = name_to_smiles(query_input)
+                        query_name = query_input
                     
                     query_mol = Chem.MolFromSmiles(query_smiles)
                     
                     if query_mol:
-                        st.success("✅ Valid query molecule!")
+                        st.success(f"✅ Searching for molecules similar to: **{query_name}**")
                         
-                        # Calculate similarties
+                        col1, col2 = st.columns([1, 2])
+                        with col1:
+                            st.markdown("**Query Molecule:**")
+                            st.code(query_smiles)
+                        with col2:
+                            from molecular_visualization import smiles_to_image
+                            img = smiles_to_image(query_smiles, width=200, height=150)
+                            if img:
+                                st.markdown(f'<img src="{img}" style="border: 2px solid #10a37f; border-radius: 8px;">', 
+                                          unsafe_allow_html=True)
+                        
+                        st.markdown("---")
+                        
+                        # Calculate similarities
                         query_fp = AllChem.GetMorganFingerprintAsBitVect(query_mol, 2, nBits=2048)
                         
                         similarities = []
@@ -245,17 +270,37 @@ elif feature == "🔎 Similarity Search":
                         st.markdown("### 🎯 Top 5 Similar Molecules")
                         
                         for i, result in enumerate(similarities[:5], 1):
-                            with st.expander(f"{i}. {result['Name']} (Similarity: {result['Similarity']:.3f})", 
-                                           expanded=(i==1)):
-                                st.code(result['SMILES'])
-                                st.metric("Tanimoto Similarity", f"{result['Similarity']:.3f}")
+                            with st.expander(
+                                f"{i}. {result['Name']} (Similarity: {result['Similarity']:.3f})", 
+                                expanded=(i==1)
+                            ):
+                                col1, col2 = st.columns([1, 1])
+                                
+                                with col1:
+                                    st.code(result['SMILES'])
+                                    st.metric("Tanimoto Similarity", f"{result['Similarity']:.3f}")
+                                    
+                                    # Similarity interpretation
+                                    if result['Similarity'] > 0.8:
+                                        st.success("🟢 Very similar")
+                                    elif result['Similarity'] > 0.6:
+                                        st.info("🟡 Moderately similar")
+                                    else:
+                                        st.warning("🟠 Somewhat similar")
+                                
+                                with col2:
+                                    img = smiles_to_image(result['SMILES'], width=200, height=150)
+                                    if img:
+                                        st.markdown(f'<img src="{img}" style="width:100%;">', 
+                                                  unsafe_allow_html=True)
                     else:
-                        st.error("Invalid SMILES")
+                        st.error(f"❌ Could not process: {query_input}")
+                        st.info("Try entering a common molecule name like: ethanol, aspirin, caffeine")
                         
                 except Exception as e:
                     st.error(f"Error: {str(e)}")
         else:
-            st.info("👆 Enter a SMILES string to search")
+            st.info("👆 Enter a molecule name to search")
 
 # === MOLECULE GENERATION ===
 elif feature == "🧬 Molecule Generation":
