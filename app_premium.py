@@ -104,8 +104,7 @@ def load_model():
         print(f"Model loading error: {e}")
         return None, 0
 
-def predict_molecule(smiles, model):
-    """Predict with visualization"""
+
     try:
         features_dict = featurize_smiles(smiles)
         if not features_dict:
@@ -134,6 +133,10 @@ def predict_molecule(smiles, model):
 # Load model
 if st.session_state.model is None:
     st.session_state.model, input_dim = load_model()
+    st.session_state.input_dim = input_dim
+elif 'input_dim' not in st.session_state:
+    # Fallback if model loaded but input_dim missing
+    st.session_state.input_dim = 13
 
 # SIDEBAR
 with st.sidebar:
@@ -190,6 +193,11 @@ with st.sidebar:
 # MAIN CONTENT
 if st.session_state.current_view == 'chat':
     st.title("🧪 Molecular Activity Predictor")
+    
+    if st.session_state.model is None:
+        st.error("⚠️ Model not loaded! Check logs.")
+    else:
+        st.success(f"✅ Model loaded (Input dim: {st.session_state.input_dim})")
     
     col1, col2 = st.columns([2, 1])
     
