@@ -312,9 +312,9 @@ elif st.session_state.current_view == 'analytics':
                         color='prediction',
                         color_discrete_map={'Active': '#10a37f', 'Inactive': '#ef4444'})
             fig.update_layout(
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color='white')
+                paper_bgcolor="white",
+                plot_bgcolor="white",
+                font=dict(color='black', size=14)
             )
             st.plotly_chart(fig, use_container_width=True)
         
@@ -324,11 +324,11 @@ elif st.session_state.current_view == 'analytics':
                              color='prediction',
                              color_discrete_map={'Active': '#10a37f', 'Inactive': '#ef4444'})
             fig.update_layout(
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color='white'),
-                xaxis=dict(gridcolor='rgba(255,255,255,0.1)', color='white'),
-                yaxis=dict(gridcolor='rgba(255,255,255,0.1)', color='white')
+                paper_bgcolor="white",
+                plot_bgcolor="white",
+                font=dict(color='black', size=14),
+                xaxis=dict(gridcolor='rgba(0,0,0,0.1)', color='black'),
+                yaxis=dict(gridcolor='rgba(0,0,0,0.1)', color='black')
             )
             st.plotly_chart(fig, use_container_width=True)
         
@@ -339,11 +339,11 @@ elif st.session_state.current_view == 'analytics':
         fig = px.line(timeline_df, x='timestamp', y='count', color='prediction',
                      color_discrete_map={'Active': '#10a37f', 'Inactive': '#ef4444'})
         fig.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color='white'),
-            xaxis=dict(gridcolor='rgba(255,255,255,0.1)', color='white'),
-            yaxis=dict(gridcolor='rgba(255,255,255,0.1)', color='white')
+            paper_bgcolor="white",
+            plot_bgcolor="white",
+            font=dict(color='black', size=14),
+            xaxis=dict(gridcolor='rgba(0,0,0,0.1)', color='black'),
+            yaxis=dict(gridcolor='rgba(0,0,0,0.1)', color='black')
         )
         st.plotly_chart(fig, use_container_width=True)
 
