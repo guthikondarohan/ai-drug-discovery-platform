@@ -45,7 +45,21 @@ st.set_page_config(
 st.markdown("""
     <style>
     .main {background-color: #0e1117;}
-    .stMetric {background-color: #1e2130; padding: 15px; border-radius: 10px;}
+    .stMetric {
+        background-color: white !important; 
+        padding: 15px; 
+        border-radius: 10px;
+        color: black !important;
+    }
+    .stMetric label {
+        color: black !important;
+    }
+    .stMetric [data-testid="stMetricValue"] {
+        color: black !important;
+    }
+    .stMetric [data-testid="stMetricDelta"] {
+        color: #666 !important;
+    }
     .molecule-card {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 20px;
